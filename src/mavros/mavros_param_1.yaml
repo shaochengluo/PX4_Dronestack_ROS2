@@ -1,0 +1,19 @@
+mavros_node:
+  ros__parameters:
+    conn_heartbeat: 1.0
+    conn_system_time: true
+    fcu_url: "/dev/ttyACM0:115200"
+    gcs_url: "udp://@127.0.0.1:14550"
+    imu_rate: 50.0
+    target_system: 1
+    target_component: 1
+    tf:
+      frame_id: "map"
+      child_frame_id: "base_link_frd"
+      rate: 10.0
+      send: true
+    vision_pose:
+      frame_id: "map"
+      child_frame_id: "base_link_frd"
+      rate: 10.0
+    log_level: debug

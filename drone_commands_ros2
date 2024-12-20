@@ -1,0 +1,69 @@
+// sitl for ros2
+
+// gazebo classic
+cd PX4-Autopilot
+make px4_sitl gazebo-classic
+
+
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map base_link
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 base_link base_link_frd
+
+
+ros2 run mavros mavros_node --ros-args --params-file /home/orinnano/SDK_ros2_ws/src/mavros/mavros_param_1.yaml
+
+// gazebo garden (solution: https://github.com/PX4/PX4-Autopilot/issues/21378)
+cd PX4-Autopilot
+make px4_sitl gz_x500
+
+ros2 launch mavros px4.launch fcu_url:="udp://:14540@127.0.0.1:14557"
+
+
+colcon build
+source ~/SDK_ros2_ws/install/setup.bash
+
+ros2 run offboard_ros2 offboard_ctrl_ros2
+ros2 run offboard_ros2 gazebo_ctrl_ros2
+
+
+------------------------------------------------------------------------
+// Navigation package
+
+colcon build --packages-ignore nav2_system_tests
+
+
+------------------------------------------------------------------------
+
+// Run QGroundControl
+flatpak run --device=all org.mavlink.qgroundcontrol
+
+-------------------------------------------------------------------------
+
+// real drone test
+
+cd ~/SDK_ros2_ws/src/mavros/mavros
+source ~/SDK_ros2_ws/install/setup.bash
+ros2 launch launch/px4.launch fcu_url:="/dev/ttyACM0:115200"
+
+
+// vrpn mocap
+ros2 launch vrpn_mocap client.launch.yaml server:=192.168.0.101 port:=3883
+
+ros2 topic echo /vrpn_mocap/x8_1/pose
+
+ros2 topic echo /mavros/local_position/pose
+
+
+
+
+colcon build
+
+cd ~/SDK_ros2_ws/
+source ~/SDK_ros2_ws/install/setup.bash
+ros2 run offboard_ros2 offboard_ctrl_ros2
+
+
+
+
+
+
+
